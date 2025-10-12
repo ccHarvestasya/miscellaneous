@@ -137,6 +137,9 @@ class HarvesterDownloader:
 			csv_writer.writeheader()
 
 			for harvester_descriptor in batch_downloader.public_key_to_descriptor_map.values():
+				if harvester_descriptor is None:
+					continue
+
 				node_descriptor = self.peers_map.get(harvester_descriptor.main_public_key, EMPTY_NODE_DESCRIPTOR)
 
 				csv_writer.writerow({
