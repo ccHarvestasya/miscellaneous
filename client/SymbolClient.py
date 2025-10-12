@@ -112,7 +112,7 @@ class SymbolLightClient:
 
 	def _get_json(self, rest_path):
 		json_http_headers = {'Content-type': 'application/json'}
-		return self.session.get(f'http://{self.node_host}:{self.node_port}/{rest_path}', headers=json_http_headers).json()
+		return self.session.get(f'http://{self.node_host}:{self.node_port}/{rest_path}', headers=json_http_headers, timeout=self.timeout).json()
 
 
 class SymbolPeerClient():
@@ -150,7 +150,7 @@ class SymbolPeerClient():
 				with self.ssl_context.wrap_socket(sock) as ssock:
 					self._send_simple_request(ssock, packet_type)
 					return parser(self._read_simple_response(ssock))
-		except socket.timeout as ex:
+		except (socket.timeout, socket.gaierror) as ex:
 			raise ConnectionRefusedError from ex
 
 	@staticmethod

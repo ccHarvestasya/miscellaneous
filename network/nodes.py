@@ -41,10 +41,14 @@ class NodeDownloader:
 	def discover(self):
 		log.info('seeding crawler with known hosts')
 		self.remaining_api_clients = [
-			self.api_client_class(node_descriptor.host) for node_descriptor in self.resources.nodes.find_all_by_role(None)
+			self.api_client_class(
+				node_descriptor.host, timeout=self.timeout, retry_count=2
+			) for node_descriptor in self.resources.nodes.find_all_by_role(None)
 		]
 		self.strong_api_clients = [
-			self.api_client_class(node_descriptor.host) for node_descriptor in self.resources.nodes.find_all_not_by_role('seed-only')
+			self.api_client_class(
+				node_descriptor.host, timeout=self.timeout, retry_count=2
+			) for node_descriptor in self.resources.nodes.find_all_not_by_role('seed-only')
 		]
 
 		log.info(f'starting {self.thread_count} crawler threads')
@@ -64,11 +68,12 @@ class NodeDownloader:
 				time.sleep(2)
 				continue
 
+			api_client = None
 			with self.lock:
 				api_client = self._pop_next_api_client()
-				if not api_client:
-					time.sleep(2)
-					continue
+			if not api_client:
+				time.sleep(2)
+				continue
 
 			log.debug(
 				f'processing {api_client.node_host} [{len(self.public_key_to_node_info_map)} discovered,'
