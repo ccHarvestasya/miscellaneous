@@ -70,7 +70,6 @@ class BatchDownloader:
 			with self.lock:
 				height = self.next_height
 				if height > self.max_height:
-					time.sleep(2)
 					break
 
 				self.next_height += 1
@@ -101,6 +100,8 @@ class BatchDownloader:
 
 			with self.lock:
 				self.public_key_to_descriptor_map[signer_public_key] = descriptor
+			
+			time.sleep(1)
 
 	def _get_balance_follow_links(self, api_client, address):
 		account_info = api_client.get_account_info(address)
