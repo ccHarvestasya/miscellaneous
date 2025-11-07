@@ -87,7 +87,7 @@ class NodeDownloader:
 				json_node['extraData'] = {'balance': 0, 'height': 0, 'finalizedHeight': 0}
 
 				# Exclude nodes with empty host
-				host = json_node['host'] if self.is_nem else json_node['endpoint']['host']
+				host = json_node['endpoint']['host'] if self.is_nem else json_node['host']
 				network = self._get_and_check_network(json_node)
 				if host and network:
 					main_public_key = self._find_main_public_key(network, json_node)
