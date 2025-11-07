@@ -86,8 +86,10 @@ class NodeDownloader:
 				json_node = api_client.get_node_info()
 				json_node['extraData'] = {'balance': 0, 'height': 0, 'finalizedHeight': 0}
 
+				# Exclude nodes with empty host
+				host = json_node['host']
 				network = self._get_and_check_network(json_node)
-				if network:
+				if host and network:
 					main_public_key = self._find_main_public_key(network, json_node)
 					is_reachable = True
 
