@@ -167,6 +167,10 @@ class NodeDownloader:
 				json_node['apiNodeInfo']['restVersion'] = api_client.get_rest_version()
 				json_node['apiNodeInfo']['isSSL'] = api_client.is_ssl()
 				json_node['apiNodeInfo']['isHealth'] = api_client.is_node_health()
+		else:
+			if api_client.is_ssl():
+				json_node['endpoint']['port'] = 7891
+				json_node['endpoint']['protocol'] = 'https'
 
 	# this function must be called in context of self.lock
 	def _pop_next_api_client(self):

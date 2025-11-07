@@ -1,3 +1,4 @@
+from requests.exceptions import RequestException
 from symbolchain.CryptoTypes import Hash256, PublicKey
 from symbolchain.nem.Network import Address, Network, NetworkTimestamp
 
@@ -29,6 +30,7 @@ class AccountInfo:
 class NemClient:
 	def __init__(self, host, port=7890, **kwargs):
 		self.session = create_http_session(**kwargs)
+		self.timeout = kwargs.get('timeout', 5)
 		(self.node_host, self.node_port) = (host, port)
 		self.network = Network.MAINNET
 
@@ -62,6 +64,14 @@ class NemClient:
 	def get_peers(self):
 		json_response = self._get_json('node/peer-list/reachable')
 		return json_response['data']
+
+	def is_ssl(self):
+		try:
+			url = f'https://{self.node_host}:7891/node/info'
+			self.session.get(url, timeout=self.timeout)
+			return True
+		except (RequestException, TimeoutError):
+			return False
 
 	def get_account_info(self, address, forwarded=False):
 		subpath = '/forwarded' if forwarded else ''
