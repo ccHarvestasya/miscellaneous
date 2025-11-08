@@ -86,7 +86,7 @@ class BatchDownloader:
 
 				self.public_key_to_descriptor_map[signer_public_key] = None
 
-			time.sleep(1)
+			time.sleep(0.5)
 			signer_address = self.facade.network.public_key_to_address(signer_public_key)
 			(main_address, main_public_key, balance) = self._get_balance_follow_links(api_client, signer_address)
 
@@ -102,7 +102,7 @@ class BatchDownloader:
 			with self.lock:
 				self.public_key_to_descriptor_map[signer_public_key] = descriptor
 
-			time.sleep(1)
+			time.sleep(0.5)
 
 	def _get_balance_follow_links(self, api_client, address):
 		account_info = api_client.get_account_info(address)
